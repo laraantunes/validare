@@ -1,0 +1,22 @@
+{
+    "name": "maycow/validare",
+    "description": "A simple-to-use validation library.",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^8.0"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Maycow Antunes",
+            "email": "maycowantunes@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Validare\\": "src/"
+        }
+    }
+}
