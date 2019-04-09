@@ -61,6 +61,22 @@ $myObj->validate('myField', function($value) use ($customValue){
 
 // And if you need to handle all the \Validare\Rule object, you may pass a new object:
 $myObj->validate('myField', new \Validare\Rule(1, \Validare\Rule::EQUALS, 1));
+
+// if you need to use a callback after validate, use a \Validate\Rule object:
+$myObj->validate(
+    'myField', 
+    new \Validare\Rule(
+        $value,
+        \Validare\Rule::IS_STRING,
+        null,
+        null,
+        function($success){
+            if ($success) {
+                // Do something!
+            }
+        }
+    )
+);
 ```
 ### The default Rules
 _Validare_ comes with many default useful rules and more still will come. All them are valid as constants of the `\Validare\Rule` class:
@@ -75,7 +91,18 @@ _Validare_ comes with many default useful rules and more still will come. All th
 - MORE_OR_EQUALS
 - LESS_OR_EQUALS
 - EQUALS
-- NOT_EQUALS 
+- NOT_EQUALS
+- IS_ARRAY
+- IS_STRING
+- IS_NUMERIC
+- IS_A
+- COUNT_EQUALS
+- COUNT_MORE
+- COUNT_LESS
+- COUNT_MORE_EQUALS
+- COUNT_LESS_EQUALS
+- HAS_ATTRIBUTE
+- HAS_ATTRIBUTE_VALUE 
 
 ### The Assert class
 If you need to validate a specific value, you may use the `\Validare\Assert` class. It has 2 basic methods, a magic method that calls the default rules dynamically and a `value()` method that validates something with the same syntax that the `Validare\Bind::validate()` method:
@@ -90,11 +117,18 @@ If you need to validate a specific value, you may use the `\Validare\Assert` cla
         2,
         [\Validare\Rule::LESS_OR_EQUALS => 5],
         [\Validare\Rule::MORE => 3]
-    ); // Returns false 
+    ); // Returns false
+    
+    // If you need to check if an object has an attribute defined, use 'has_attribute' rule:
+    \Validare\Assert::has_attribute($obj, 'test');
+    
+    // And if you need to check a value of an object, use 'has_attribute_value' rule, with an 
+    // array on compareValue:
+    \Validare\Assert::has_attribute_value($obj, ['test' => 'wololo']);
 ```
 
 ## Tests
 Tests are under `test/` folder using PHPUnit.
 
 ## Contributing
-Fell free to create pull requests with new rules, bugfixing and sugestions! <3
+Fell free to create pull requests with new rules, bug fixing and suggestions! <3
