@@ -19,6 +19,59 @@ class ValidareTest extends TestCase {
 
         $length = \Validare\Assert::length('test', 5);
         $this->assertFalse($length);
+
+        $this->assertTrue(\Validare\Assert::is_array([1,2,3]));
+        $this->assertFalse(\Validare\Assert::is_array('test'));
+        $this->assertFalse(\Validare\Assert::is_array(null));
+        $this->assertFalse(\Validare\Assert::is_array(1));
+        $this->assertFalse(\Validare\Assert::is_array(new \Validare\Assert()));
+
+        $this->assertTrue(\Validare\Assert::is_string('test'));
+        $this->assertFalse(\Validare\Assert::is_string(1));
+        $this->assertFalse(\Validare\Assert::is_string(null));
+        $this->assertFalse(\Validare\Assert::is_string(new \Validare\Assert()));
+
+        $this->assertFalse(\Validare\Assert::is_numeric('test'));
+        $this->assertTrue(\Validare\Assert::is_numeric(1));
+        $this->assertFalse(\Validare\Assert::is_numeric(null));
+        $this->assertFalse(\Validare\Assert::is_numeric(new \Validare\Assert()));
+
+        $this->assertFalse(\Validare\Assert::is_a('test', \Validare\Assert::class));
+        $this->assertFalse(\Validare\Assert::is_a([], \Validare\Assert::class));
+        $this->assertFalse(\Validare\Assert::is_a(null, \Validare\Assert::class));
+        $this->assertTrue(\Validare\Assert::is_a(new \Validare\Assert(), \Validare\Assert::class));
+
+        $this->assertFalse(\Validare\Assert::count_equals('test', 1));
+        $this->assertTrue(\Validare\Assert::count_equals([1], 1));
+        $this->assertFalse(\Validare\Assert::count_equals([1, 2], 1));
+
+        $this->assertFalse(\Validare\Assert::count_more('test', 1));
+        $this->assertTrue(\Validare\Assert::count_more([1, 2], 1));
+        $this->assertFalse(\Validare\Assert::count_more([1], 1));
+
+        $this->assertFalse(\Validare\Assert::count_less('test', 1));
+        $this->assertTrue(\Validare\Assert::count_less([1], 2));
+        $this->assertFalse(\Validare\Assert::count_less([1, 2], 2));
+
+        $this->assertFalse(\Validare\Assert::count_more_equals('test', 1));
+        $this->assertTrue(\Validare\Assert::count_more_equals([1], 1));
+        $this->assertTrue(\Validare\Assert::count_more_equals([1, 2], 1));
+        $this->assertFalse(\Validare\Assert::count_more_equals([1], 2));
+
+        $this->assertFalse(\Validare\Assert::count_less_equals('test', 1));
+        $this->assertTrue(\Validare\Assert::count_less_equals([1], 2));
+        $this->assertTrue(\Validare\Assert::count_less_equals([1, 2], 2));
+        $this->assertFalse(\Validare\Assert::count_less_equals([1, 2, 3], 2));
+
+        $obj = $this->sampleObject();
+        $this->assertTrue(\Validare\Assert::has_attribute($obj, 'test'));
+        $this->assertFalse(\Validare\Assert::has_attribute($obj, 'field'));
+
+        $obj->test = 'my test';
+        $this->assertTrue(\Validare\Assert::has_attribute_value($obj, ['test' => 'my test']));
+        $this->assertFalse(\Validare\Assert::has_attribute_value($obj, ['test' => 'wololo']));
+        // Field does not exists, returns false
+        $this->assertFalse(\Validare\Assert::has_attribute_value($obj, ['field' => 'nope']));
     }
 
     public function testAssertValue() {
@@ -34,6 +87,45 @@ class ValidareTest extends TestCase {
         $equals = \Validare\Assert::value(1, new \Validare\Rule(1, \Validare\Rule::EQUALS, 1));
         $this->assertTrue($equals);
 
+    }
+
+    public function testCallbackSuccess()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $value = 1;
+        \Validare\Assert::value(
+            $value,
+            new \Validare\Rule(
+                $value,
+                \Validare\Rule::IS_STRING,
+                null,
+                null,
+                function($success){
+                    if (!$success) {
+                        throw new RuntimeException();
+                    }
+                }
+            )
+        );
+    }
+
+    public function testCallbackWithUse()
+    {
+        $value = 1;
+        $external = $this;
+        \Validare\Assert::value(
+            $value,
+            new \Validare\Rule(
+                $value,
+                \Validare\Rule::IS_STRING,
+                null,
+                null,
+                function($success) use ($external) {
+                    $external->assertFalse($success);
+                }
+            )
+        );
     }
 
     /**
@@ -102,4 +194,12 @@ class ValidareTest extends TestCase {
             }
         };
     }
+
+    protected function sampleObject()
+    {
+        return new class {
+            public $test;
+        };
+    }
+
 }
