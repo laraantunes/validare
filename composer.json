@@ -1,5 +1,5 @@
 {
-    "name": "maycow/validare",
+    "name": "laraantunes/validare",
     "description": "A simple-to-use validation library.",
     "type": "library",
     "require-dev": {
