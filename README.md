@@ -32,7 +32,7 @@ var_dump($myObj->validationErrors());
 ### The validate() method
 The `valid()` method is an alias for `validate()`, without any parameter. This way, it'll run the validation for the object.
 If `validate()` is called with parameters, it'll add a validation for the field passed as the first parameter with the rules passed as the other parameters:
-```
+```php
 // Adds a REQUIRED validation for myField:
 $myObj->validate('myField', \Validare\Rule::REQUIRED);
 
@@ -79,7 +79,7 @@ _Validare_ comes with many default useful rules and more still will come. All th
 
 ### The Assert class
 If you need to validate a specific value, you may use the `\Validare\Assert` class. It has 2 basic methods, a magic method that calls the default rules dynamically and a `value()` method that validates something with the same syntax that the `Validare\Bind::validate()` method:
-```
+```php
     // Magic Calls for default rules:
     \Validare\Assert::required('my test value'); // Returns true
     \Validare\Assert::length('test', 5); // Returns false
