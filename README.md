@@ -2,7 +2,7 @@
 A simple to use validation library.
 
 ## Installation
-`composer require maycow/validare`
+`composer require laraantunes/validare`
 
 ## Basic Usage
 Create a class and use the `\Validare\Bind` trait and add the rules by the validate() method:
