@@ -1,6 +1,6 @@
 <?php
 /**
- * 2019 Hood Framework
+ * 2019 Validare
  */
 
 namespace Validare;
